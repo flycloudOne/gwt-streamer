@@ -13,6 +13,9 @@ public class Base64PackedStreamFactory implements StreamFactory
     private final static char[] ABC = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_".toCharArray();
 
     private final static int[] ABC_TO_INT = new int[128];
+    
+    /** 空字符串使用此常量表示 */
+    private final static String NULL_STRING = "$Null$";
 
     static {
         for (int i = 0; i < ABC.length; i++) {
@@ -196,6 +199,10 @@ public class Base64PackedStreamFactory implements StreamFactory
          */
         public void writeString( String val ) {
             try {
+            		// 如果字符串为null，则设置空字符串标志，防止空指针
+            		if ( val == null ) {
+            			val = NULL_STRING;
+            		}
                 byte[] buf = val.getBytes("UTF-8");
                 writeUnsignedPackedInt(buf.length);
                 writeByteArray(buf);
@@ -362,7 +369,12 @@ public class Base64PackedStreamFactory implements StreamFactory
             byte[] buf = new byte[l];
             readByteArray(buf);
             try {
-                return new String( buf, "UTF-8" );
+            		// 如果返回的是空字符串标志NULL_STRING，则设置字符串为空
+            		String tmpStr = new String( buf, "UTF-8" );
+            		if ( NULL_STRING.equals( tmpStr ) ) {
+            			tmpStr = null;
+            		}
+                return tmpStr;
             } catch ( UnsupportedEncodingException e ) {
                 throw new StreamerException( e );
             }
