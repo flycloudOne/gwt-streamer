@@ -113,7 +113,8 @@ public class StreamerGenerator extends Generator {
         }
 
         //int classIdNum = 0;
-        out.println( "private final static Map<String,Streamer> _INITIAL_STREAMERS;" );
+        // remove by xiewz 2016.11.23
+//        out.println( "private final static Map<String,Streamer> _INITIAL_STREAMERS;" );
         out.println( "static {" );
         out.indent();
 		out.println( "Map<String,Streamer> initStreamers = new HashMap<String,Streamer>();" );
@@ -300,13 +301,14 @@ public class StreamerGenerator extends Generator {
 	        	}
 	        }
         } 
-
-		out.println("_INITIAL_STREAMERS = Collections.unmodifiableMap(initStreamers);");
+        // modified by xiewz 2016.11.23
+		out.println("StreamerInternal.INITIAL_STREAMERS = Collections.unmodifiableMap(initStreamers);");
 		out.println("applyConfig(new StreamerConfig());");
         out.outdent();
         out.println( "}" );
-        out.println( "@Override protected Map<String,Streamer> initialStreamers() { " +
-                "return _INITIAL_STREAMERS; }" );
+        // remove by xiewz 2016.11.23
+//        out.println( "@Override protected Map<String,Streamer> initialStreamers() { " +
+//                "return _INITIAL_STREAMERS; }" );
 
         out.commit(logger);
         return packageName + "." + streamerImplClassName;

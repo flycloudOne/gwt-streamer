@@ -1,8 +1,15 @@
 package com.googlecode.gwtstreamer.client;
 
-import com.googlecode.gwtstreamer.client.impl.Base64PackedStreamFactory;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import java.util.*;
+import com.googlecode.gwtstreamer.client.impl.Base64PackedStreamFactory;
 
 /**
  * Object to apply custom streamer configuration
@@ -10,7 +17,8 @@ import java.util.*;
  */
 public class StreamerConfig {
     private SortedSet<String> registeredNames = new TreeSet<String>();
-    private SortedMap<Class<?>,Streamer> registeredStreamers = new TreeMap<Class<?>,Streamer>();
+    // change new TreeMap to new LinkedHashMap, modified by xiewz 2016.11.23 23:09
+    private Map<Class<?>,Streamer> registeredStreamers = new LinkedHashMap<Class<?>,Streamer>();
     private StreamFactory streamFactory = new Base64PackedStreamFactory();
     private String classRestrictionPolicy;
 
