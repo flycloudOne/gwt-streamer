@@ -1,14 +1,19 @@
 package com.googlecode.gwtstreamer.client.impl;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import com.googlecode.gwtstreamer.client.StreamFactory;
 import com.googlecode.gwtstreamer.client.Streamer;
 import com.googlecode.gwtstreamer.client.StreamerException;
 
-import java.util.*;
-
 public final class WriteContext extends Context implements StreamFactory.Writer
 {
+	// storage reference object (add by xiewz at 2016.11.24 10:06)
 	private Map<Object,Integer> refs = new IdentityHashMap<Object,Integer>( 30 );
+	// storage java basi type ( add by xiewz at 2016.11.24 10:07 )
 	private Map<Object,Integer> refsImm = new HashMap<Object, Integer>( 70 );
 
 	private final StreamFactory.Writer out;
@@ -31,7 +36,8 @@ public final class WriteContext extends Context implements StreamFactory.Writer
 	 */
 	private Integer getObjectIdentity(Object obj)
 	{
-		if ( obj.getClass().getName().startsWith( "java." ) ) {
+		// Map/Collection can not storage in HashMap (add by xiewz at 2016.11.24 10:10)
+		if ( obj.getClass().getName().startsWith( "java." ) && !(obj instanceof Map || obj instanceof Collection) ) {
 			// java core classes are immutable - put them to normal hashMap
 			return refsImm.get( obj );
 		} else {
@@ -51,8 +57,8 @@ public final class WriteContext extends Context implements StreamFactory.Writer
 	{
 		Integer idx = Integer.valueOf( refs.size()+refsImm.size() );
 		Integer old;
-		
-		if ( obj.getClass().getName().startsWith( "java." ) ) {
+		// Map/Collection can not storage in HashMap (add by xiewz at 2016.11.24 10:10)
+		if ( obj.getClass().getName().startsWith( "java." ) && !(obj instanceof Map || obj instanceof Collection) ) {
 			old = refsImm.put( obj, idx );
 		} else {
 			old = refs.put( obj, idx );
